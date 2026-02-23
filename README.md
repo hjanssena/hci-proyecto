@@ -51,7 +51,7 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 | **CU-GE-004** | **Archive Event** | Move events to a historical state; triggers cancellation if active. |
 | **CU-GE-009** | **Manage Enrollment** | Review applicant documents and approve/reject participants. |
 | **CU-GE-010** | **Validate Manual Payments** | Verify external transfers/deposits to confirm inscriptions. |
-| **CU-GE-012** | **Create Category** | Define new classifications like "Maestría" or "Curso". |
+| **CU-GE-012** | **Create Category** | Define new classifications like "Diplomado" or "Curso". |
 | **CU-GE-013** | **Consult Categories** | View all active and archived event categories. |
 | **CU-GE-014** | **Modify Category** | Edit category names or change their status. |
 | **CU-GE-015** | **Archive Category** | Disable categories from future use while maintaining history. |
