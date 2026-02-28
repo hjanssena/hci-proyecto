@@ -12,12 +12,12 @@ This system is an internal administrative platform designed for the **Staff of t
 
 The platform centralizes administrative tasks, replacing manual tracking with a digital workflow to manage courses, workshops and diplomas.
 
-Click here for more information about the project
+[Click here for more information about the project](https://github.com/Proyectos-Vinculacion-FMAT/ECFCA)
 
 ##  Target User
 * **FCA Continuous Education Staff (Coordinators):** Users responsible for setting up the educational offer, reviewing applicant documentation, confirming registrations, and managing post-event data.
 
-Click here to see our Persona specification
+[Click here to see our Persona specification](https://github.com/hjanssena/hci-proyecto/blob/97920b055d7ff2ed91a164167daa1bf3a51b1894/UserPersona.pdf)
 
 ##  Project Scope
 
@@ -84,4 +84,4 @@ We follow a lean UX process to refine the user experience:
 * **Make (AI-Driven Prototyping):** We accelerate the "Design Solutions" phase by using **AI-generated high-fidelity prototypes**.
 * **Check (Tangible Validation):** We can then validate the functional prototype with our end user.
 
-Click here for more information about our UCD approach.
+[Click here for more information about our UCD approach](https://github.com/hjanssena/hci-proyecto/blob/97920b055d7ff2ed91a164167daa1bf3a51b1894/user-centered-design.md)
