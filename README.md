@@ -85,4 +85,5 @@ We follow a lean UX process to refine the user experience:
 * **Check (Tangible Validation):** We can then validate the functional prototype with our end user.
 
 [Click here for more information about our approach to UCD and how the team is organizing](https://github.com/hjanssena/hci-proyecto/blob/97920b055d7ff2ed91a164167daa1bf3a51b1894/user-centered-design.md)
+
 [Click here to go to our Github Project](https://github.com/users/hjanssena/projects/4)
