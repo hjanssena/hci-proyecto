@@ -1,4 +1,7 @@
-# User-Centered Design (UCD) & Lean UX Methodology
+# Our UCD & Lean UX Strategy
+
+
+## User-Centered Design (UCD) & Lean UX Methodology
 
 We are integrating **User-Centered Design (UCD)** principles within a **Lean UX** framework. This approach prioritizes rapid, iterative learning over heavy documentation, focusing on shortening the distance between a requirement and its validation.
 
@@ -38,6 +41,18 @@ Deliverables: Testing results, results comparison analisis, improved prototype (
 * **Technical Lead:** Oversees the implementation of core features and the underlying infrastructure required for the prototype. Ensures all technical tools and system requirements are fully operational to support the project lifecycle.
 
 * **UX Researcher:** Executes the "Check" phase by leading user validation sessions, managing checklists, and drafting the improvement plans.
+
+### How we are organizing
+
+Starting from the second delivery, the project will be managed through a synchronized flow of tasks in GIthub Projects designed to meet each delivery's goals:
+
+* **Task Distribution:** All relevant tasks for each sprint will be a ticket assigned to a team member.
+
+* **Weekly Sprints:** Each month consists of four sprints where the team as a whole prioritize the backlog and the **Technical Lead** manages the implementation of the prototype's infrastructure.
+
+* **Collaborative Review:** Every sprint concludes with a brief internal review to ensure the "Make" phase aligns with the defined usability attributes.
+
+[Click here to go to the Project](https://github.com/users/hjanssena/projects/4)
 
 ### References
 
