@@ -12,10 +12,12 @@ This system is an internal administrative platform designed for the **Staff of t
 
 The platform centralizes administrative tasks, replacing manual tracking with a digital workflow to manage courses, workshops and diplomas.
 
+Click here for more information about the project
 
 ##  Target User
 * **FCA Continuous Education Staff (Coordinators):** Users responsible for setting up the educational offer, reviewing applicant documentation, confirming registrations, and managing post-event data.
 
+Click here to see our Persona specification
 
 ##  Project Scope
 
@@ -67,23 +69,19 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 | All event and enrollment records shall feature high-contrast, color-coded visual indicators (e.g., "Pending," "Confirmed," "Archived") to allow for immediate identification of record status. | **CU-GE-009** (Manage Enrollment), **CU-GE-010** (Validate Payments) | Memorability / Perception |
 | The system shall provide "search-as-you-type" functionality across event and category lists to facilitate rapid retrieval of historical and active data. | **CU-GE-002** (Consult Events), **CU-GE-013** (Consult Categories) | Efficiency / Findability |
 | System errors shall be presented in natural administrative language (e.g., "Instructor schedule conflict") rather than technical or numeric codes to facilitate self-correction. | **All CRUD Operations** | Error Recovery |
-| Filtering and search queries within the event and category catalogs shall return results in under 500ms to ensure an uninterrupted administrative workflow. | **CU-GE-002** (Consult Events), **CU-GE-013** (Consult Categories) | Performance / Efficiency |
 | The system shall provide real-time visual feedback for data entry errors (e.g., incorrect date formats or duplicate vouchers) at the field level before form submission. | **CU-GE-003** (Modify Event), **CU-GE-010** (Validate Payments) | Error Prevention |
 | All administrative modules shall utilize a standardized UI library for CRUD operations, ensuring identical button placements, icon sets, and interaction patterns. | **CU-GE-012, 014, 015** (Category Management) | Consistency / Learnability |
 | Hoverable information icons shall be present for complex tasks (e.g., attendance file uploads) to explain specific data formats and process requirements. | **CU-GE-016** (Manage Attendance) | Learnability / Help |
 
 ## UX Testing and Validation Methodology
 
-### 1. Objective
+#### Objective
 The goal is to validate that the system enables staff to manage 15-20 simultaneous programs with high speed and zero data loss. Testing will ensure the digital workflow matches or exceeds the efficiency of the current administrative methods.
 
-### 2. Iterative Cycle
+#### Iterative Cycle
 We follow a lean UX process to refine the user experience:
-* **Prototyping:** Create interactive high-fidelity views using AI tools, focusing on the high-density dashboard and event cloning features.
-* **Validation:** Conduct test sessions where staff perform real tasks, such as validating payments or archiving categories.
-* **Improvement:** Identify navigation bottlenecks or user frustrations and update the design immediately for another validation round.
+* **Think (Context & Requirements):** We begin by defining assumptions based on the coordinators' actual workflow.
+* **Make (AI-Driven Prototyping):** We accelerate the "Design Solutions" phase by using **AI-generated high-fidelity prototypes**.
+* **Check (Tangible Validation):** We can then validate the functional prototype with our end user.
 
-### 3. Success Metrics
-* **Task Completion:** Ability of the user to clone an event and update variable fields without errors.
-* **System Efficiency:** Search functionality must return results in under 500ms to maintain workflow momentum.
-* **Navigation:** The target number of instances where a user feels "lost", pauses for a large amount of time without knowing how to proceed, or requires external guidance should be zero.
+Click here for more information about our UCD approach.
