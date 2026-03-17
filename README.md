@@ -57,7 +57,6 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 | **CU-GE-013** | **Consult Categories** | View all active and archived event categories. |
 | **CU-GE-014** | **Modify Category** | Edit category names or change their status. |
 | **CU-GE-015** | **Archive Category** | Disable categories from future use while maintaining history. |
-| **CU-GE-016** | **Manage Attendance** | Upload attendance records for events that have concluded. |
 | **CU-GE-025** | **Cancel Event** | Formally cancel events and process vouchers or refunds. |
 
 ## Non-Functional Requirements
