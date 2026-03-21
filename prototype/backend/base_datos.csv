@@ -1,0 +1,213 @@
+tabla,campo,tipo_de_dato,descripcion_justificacion
+USERS,id,UUID PK NOT NULL,Identificador único del usuario.
+USERS,email,VARCHAR(255) UNIQUE NOT NULL,Correo usado para autenticación y comunicación.
+USERS,has_verified_email,BOOLEAN NOT NULL DEFAULT false,Indica si el usuario confirmó su correo.
+USERS,customer_token,VARCHAR(255) NULL,Identificador del cliente en Stripe.
+USERS,role_level,"ENUM(usuario_publico,staff_soporte,administrador) NOT NULL",Define roles y permisos.
+USERS,name,VARCHAR(150) NOT NULL,Nombre(s) del médico o representante.
+USERS,last_name,VARCHAR(150) NOT NULL,Apellidos del usuario.
+USERS,password,VARCHAR(255) NOT NULL,Contraseña cifrada (argon2).
+USERS,has_accepted-_terms,BOOLEAN NOT NULL,Registro legal de aceptación de términos.
+USERS,time_terms_accepted,TIMESTAMP NULL,Fecha y hora en que aceptó términos.
+USERS,logo_url,TEXT NULL,URL del logotipo para marca de agua.
+USERS,created_at,TIMESTAMP NOT NULL,Fecha de creación del registro.
+USERS,updated_at,TIMESTAMP NOT NULL,Fecha de última modificación.
+USERS,last_updated_by,UUID FK USERS(id) NULL,Auditoría de modificación.
+PASSWORD_CHANGE_PETITION,id,UUID PK NOT NULL,Identificador único de la solicitud.
+PASSWORD_CHANGE_PETITION,idUSERS,UUID FK USERS(id) NOT NULL,Usuario que solicita el cambio.
+PASSWORD_CHANGE_PETITION,validation_code,VARCHAR(100) NOT NULL,Código único enviado por correo.
+PASSWORD_CHANGE_PETITION,is_active,BOOLEAN NOT NULL DEFAULT true,Indica si el token sigue vigente.
+PASSWORD_CHANGE_PETITION,created_at,TIMESTAMP NOT NULL,Fecha de creación del token.
+AI_TASKS,id,UUID PK NOT NULL,Identificador único del trabajo.
+AI_TASKS,idUSERS,UUID FK USERS(id) NOT NULL,Médico que solicitó el procesamiento.
+AI_TASKS,status,"ENUM(pendiente,procesando,completado,fallido) NOT NULL",Estado del procesamiento.
+AI_TASKS,source_url,TEXT NOT NULL,Referencia temporal a imagen original.
+AI_TASKS,result_url,TEXT NULL,Referencia a imagen generada.
+AI_TASKS,has_been_deleted,BOOLEAN NOT NULL DEFAULT false,Indica si fue eliminado por política de retención.
+AI_TASKS,programmed_deletion_date,TIMESTAMP NULL,Fecha programada de eliminación automática.
+AI_TASKS,created_at,TIMESTAMP NOT NULL,Fecha de creación.
+AI_TASKS,updated_at,TIMESTAMP NOT NULL,Última actualización.
+AI_TASKS,finished_at,TIMESTAMP NULL,Fecha de finalización.
+AI_TASKS,client_has_consented,BOOLEAN NOT NULL,Registro legal por procesamiento.
+AI_TASKS,client_consented_at,TIMESTAMP NULL,Fecha del consentimiento.
+AI_TASKS,retry_count,INT NOT NULL DEFAULT 0,Intentos por fallos técnicos.
+AI_TASKS,regeneration_count,INT NOT NULL DEFAULT 0,Acumulado de número de regeneraciones
+AI_TASKS,error_log,TEXT NULL,Detalle técnico del error.
+AI_TASKS,idCREDIT_MOVEMENTS,UUID FK CREDIT_MOVEMENTS(id) NULL,Vincula consumo de crédito.
+AI_TASKS,is_free_generation,BOOLEAN NOT NULL DEFAULT false,Indica si no consume crédito.
+AI_TASKS,idPARENT_TASK,UUID FK AI_TASKS(id) NULL,Referencia a trabajo original.
+AI_TASKS,comfyui_transaction_id,VARCHAR(255) NULL,ID ejecución en ComfyUI.
+WORK_QUEUE,id,UUID PK NOT NULL,Identificador de la cola.
+WORK_QUEUE,idAI_TASKS,UUID FK AI_TASKS(id) NOT NULL,Trabajo asociado.
+WORK_QUEUE,priority,INT NOT NULL DEFAULT 1,Permite priorización.
+WORK_QUEUE,status,"ENUM(en_cola,procesando,finalizado,error) NOT NULL",Estado en la cola.
+WORK_QUEUE,assigned_worker,VARCHAR(100) NULL,Identificador del worker GPU.
+WORK_QUEUE,created_at,TIMESTAMP NOT NULL,Fecha de entrada en cola.
+WORK_QUEUE,processed_at,TIMESTAMP NULL,Fecha de inicio de procesamiento.
+INVOICE_DATA,id,UUID PK NOT NULL,Identificador del registro fiscal.
+INVOICE_DATA,idUSERS,UUID FK USERS(id) NOT NULL,Usuario dueño de los datos.
+INVOICE_DATA,is_moral_person,BOOLEAN NOT NULL,Define tipo fiscal.
+INVOICE_DATA,taxid,VARCHAR(20) NULL,RFC mexicano o TaxID extranjero.
+INVOICE_DATA,razon_social,VARCHAR(255) NULL,Nombre fiscal.
+INVOICE_DATA,idFISCAL_REGIMENTS,UUID FK FISCAL_REGIMENTS(id) NULL,Régimen aplicable en México.
+INVOICE_DATA,idCFDI_USES,UUID FK CFDI_USES(id) NULL,Uso del CFDI requerido por SAT.
+INVOICE_DATA,address_line1,VARCHAR(255) NULL,Calle y número.
+INVOICE_DATA,address_line2,VARCHAR(255) NULL,Complemento de dirección.
+INVOICE_DATA,zip_code,VARCHAR(10) NULL,Código postal.
+INVOICE_DATA,city,VARCHAR(150) NULL,Municipio o ciudad.
+INVOICE_DATA,idSTATE,UUID FK STATES(id) NULL,Estado o provincia.
+INVOICE_DATA,idCOUNTRY,UUID FK COUNTRIES(id) NULL,País fiscal.
+INVOICE_DATA,created_at,TIMESTAMP NOT NULL,Fecha creación.
+INVOICE_DATA,updated_at,TIMESTAMP NOT NULL,Última modificación.
+INVOICE_DATA,updated_by,UUID FK USERS(id) NULL,Auditoría.
+CFDI_USES,id,UUID PK NOT NULL,Identificador interno.
+CFDI_USES,code,VARCHAR(10) UNIQUE NOT NULL,Clave oficial SAT.
+CFDI_USES,description,VARCHAR(255) NOT NULL,Descripción del uso CFDI.
+CFDI_USES,created_at,TIMESTAMP NOT NULL,Fecha creación.
+CFDI_USES,updated_at,TIMESTAMP NOT NULL,Última modificación.
+CFDI_USES,updated_by,UUID FK USERS(id) NULL,Auditoría.
+FISCAL_REGIMENTS,id,UUID PK NOT NULL,Identificador interno.
+FISCAL_REGIMENTS,code,VARCHAR(10) UNIQUE NOT NULL,Clave oficial SAT.
+FISCAL_REGIMENTS,description,VARCHAR(255) NOT NULL,Descripción régimen fiscal.
+FISCAL_REGIMENTS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+FISCAL_REGIMENTS,updated_at,TIMESTAMP NOT NULL,Última modificación.
+FISCAL_REGIMENTS,updated_by,UUID FK USERS(id) NULL,Auditoría.
+STATES,id,UUID PK NOT NULL,Identificador del estado o provincia.
+STATES,name,VARCHAR(150) NOT NULL,Nombre oficial del estado.
+STATES,created_at,TIMESTAMP NOT NULL,Fecha creación.
+STATES,updated_at,TIMESTAMP NOT NULL,Última modificación.
+STATES,updated_by,UUID FK USERS(id) NULL,Auditoría.
+COUNTRIES,id,UUID PK NOT NULL,Identificador del país.
+COUNTRIES,name,VARCHAR(150) NOT NULL,Nombre oficial del país.
+COUNTRIES,created_at,TIMESTAMP NOT NULL,Fecha creación.
+COUNTRIES,updated_at,TIMESTAMP NOT NULL,Última modificación.
+COUNTRIES,updated_by,UUID FK USERS(id) NULL,Auditoría.
+PLANS,id,UUID PK NOT NULL,Identificador del plan.
+PLANS,name,VARCHAR(150) NOT NULL,Nombre comercial del plan.
+PLANS,price,"DECIMAL(10,2) NOT NULL",Precio del plan.
+PLANS,currency,VARCHAR(10) NOT NULL,Moneda ISO.
+PLANS,renew_interval,"ENUM(mensual,anual) NOT NULL",Periodicidad del plan.
+PLANS,idPLAN_LEVELS,UUID FK PLAN_LEVELS(id) NOT NULL,Nivel funcional asociado.
+PLANS,is_active,BOOLEAN NOT NULL,Si el plan es activo
+PLANS,external_price_id,VARCHAR(255) NOT NULL,ID de precio en Stripe.
+PLANS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+PLANS,updated_at,TIMESTAMP NOT NULL,Última modificación.
+PLANS,updated_by,UUID FK USERS(id) NULL,Auditoría.
+PLAN_LEVELS,id,UUID PK NOT NULL,Identificador del nivel.
+PLAN_LEVELS,name,VARCHAR(100) NOT NULL,Nombre del nivel.
+PLAN_LEVELS,daily_credits,INT NOT NULL,Cantidad de créditos diarios.
+PLAN_LEVELS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+PLAN_LEVELS,updated_at,TIMESTAMP NOT NULL,Última modificación.
+PLAN_LEVELS,last_updated_by,UUID FK USERS(id) NULL,Auditoría.
+CREDITS_BALANCE,id,UUID PK NOT NULL,Identificador del balance.
+CREDITS_BALANCE,idUSERS,UUID FK USERS(id) UNIQUE NOT NULL,Usuario propietario.
+CREDITS_BALANCE,current_balance,INT NOT NULL,Saldo actual cacheado.
+CREDITS_BALANCE,updated_at,TIMESTAMP NOT NULL,Última sincronización.
+PAYMENT_METHODS,id,UUID PK NOT NULL,Identificador del método.
+PAYMENT_METHODS,idUSERS,UUID FK USERS(id) NOT NULL,Usuario propietario.
+PAYMENT_METHODS,token,VARCHAR(255) NOT NULL,Token seguro del proveedor PCI.
+PAYMENT_METHODS,brand,VARCHAR(50) NOT NULL,Marca de tarjeta.
+PAYMENT_METHODS,last_4_digits,CHAR(4) NOT NULL,Últimos 4 dígitos.
+PAYMENT_METHODS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+PAYMENT_METHODS,updated_at,TIMESTAMP NOT NULL,Última modificación.
+PAYMENT_METHODS,updated_by,UUID FK USERS(id) NULL,Auditoría.
+INVOICES,id,UUID PK NOT NULL,Identificador interno.
+INVOICES,idINVOICE_DATA,UUID FK INVOICE_DATA(id) NOT NULL,Datos fiscales usados.
+INVOICES,idTRANSACTION,UUID FK TRANSACTIONS(id) NOT NULL,Transacción relacionada.
+INVOICES,subtotal,"DECIMAL(10,2) NOT NULL",Subtotal antes de impuestos.
+INVOICES,total,"DECIMAL(10,2) NOT NULL",Total facturado.
+INVOICES,currency,VARCHAR(10) NOT NULL,Moneda ISO.
+INVOICES,fiscal_uuid,VARCHAR(50) UNIQUE NOT NULL,UUID fiscal timbrado.
+INVOICES,emitted_at,TIMESTAMP NOT NULL,Fecha de emisión.
+INVOICES,xml_url,TEXT NULL,Ruta XML CFDI.
+INVOICES,pdf_url,TEXT NULL,Ruta PDF representación.
+INVOICES,invoice_status,"ENUM(pendiente,timbrada,cancelada,error_sat) NOT NULL",Estado fiscal.
+INVOICES,idINVOICE_CANCELATION_MOTIVE,UUID FK CANCELATION_MOTIVES(id) NULL,Motivo SAT si aplica.
+INVOICES,total_tax,"DECIMAL(10,2) NOT NULL",Total impuestos trasladados.
+INVOICE_CANCELATION_MOTIVE,id,UUID PK NOT NULL,Identificador interno.
+INVOICE_CANCELATION_MOTIVE,sat_code,VARCHAR(10) UNIQUE NOT NULL,Clave oficial SAT.
+INVOICE_CANCELATION_MOTIVE,description,VARCHAR(255) NOT NULL,Descripción motivo.
+INVOICE_CANCELATION_MOTIVE,created_at,TIMESTAMP NOT NULL,Fecha creación.
+INVOICE_CANCELATION_MOTIVE,updated_at,TIMESTAMP NOT NULL,Última modificación.
+INVOICE_CANCELATION_MOTIVE,updated_by,UUID FK USERS(id) NULL,Auditoría.
+COUPONS,id,UUID PK NOT NULL,Identificador del cupón.
+COUPONS,code,VARCHAR(50) UNIQUE NOT NULL,Código promocional.
+COUPONS,discount,"DECIMAL(5,2) NOT NULL",Valor del descuento.
+COUPONS,dicount_type,"ENUM(mensual,anual) NOT NULL",Periodicidad afectada.
+COUPONS,is_active,BOOLEAN NOT NULL,Indica si está vigente.
+COUPONS,application_type,"ENUM(primer_mes,recurrente,unico_pago) NOT NULL",Regla de aplicación.
+COUPONS,valid_until,TIMESTAMP NULL,Fecha límite uso.
+COUPONS,duration,INT NULL,Cantidad de ciclos aplicables.
+COUPONS,redention_limit,INT NULL,Número máximo de usos.
+COUPONS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+COUPONS,updated_at,TIMESTAMP NOT NULL,Última modificación.
+COUPONS,updated_by,UUID FK USERS(id) NULL,Auditoría.
+DISCOUNTS,id,UUID PK NOT NULL,Identificador del descuento aplicado.
+DISCOUNTS,idCOUPONS,UUID FK COUPONS(id) NOT NULL,Cupón aplicado.
+DISCOUNTS,idSUBSCRIPTIONS,UUID FK SUBSCRIPTIONS(id) NOT NULL,Suscripción afectada.
+DISCOUNTS,applied_at,TIMESTAMP NOT NULL,Fecha aplicación.
+DISCOUNTS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+DISCOUNTS,updated_at,TIMESTAMP NOT NULL,Última modificación.
+DISCOUNTS,updated_by,UUID FK USERS(id) NULL,Auditoría.
+LOGS_WEBHOOKS,id,UUID PK NOT NULL,Identificador del log.
+LOGS_WEBHOOKS,log,TEXT NOT NULL,Payload recibido.
+LOGS_WEBHOOKS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+LOGS_WEBHOOKS,updated_at,TIMESTAMP NOT NULL,Última modificación.
+LOGS_WEBHOOKS,last_updated_by,UUID FK USERS(id) NULL,Auditoría.
+TICKETS,id,UUID PK NOT NULL,Identificador del ticket.
+TICKETS,idUSERS,UUID FK USERS(id) NOT NULL,Usuario creador.
+TICKETS,category,VARCHAR(100) NOT NULL,Categoría del ticket.
+TICKETS,status,"ENUM(abierto,cerrado) NOT NULL",Estado del ticket.
+TICKETS,subject,VARCHAR(255) NOT NULL,Título del ticket.
+TICKETS,priority,"ENUM(baja,media,alta) NOT NULL",Nivel de prioridad.
+TICKETS,idAI_TASKS,UUID FK AI_TASKS(id) NULL,Referencia al trabajo de AI reportado
+TICKETS,idTRANSACTION,UUID FK TRANSACTIONS(id) NULL,Referencia a la transacción monetaria reportada
+TICKETS,created_at,TIMESTAMP NOT NULL,Fecha creación.
+TICKETS,closed_at,TIMESTAMP NULL,Fecha cierre.
+TICKET_MESSAGES,id,UUID PK NOT NULL,Identificador del mensaje.
+TICKET_MESSAGES,idTICKET,UUID FK TICKETS(id) NOT NULL,Ticket asociado.
+TICKET_MESSAGES,idUSERS,UUID FK USERS(id) NOT NULL,Autor del mensaje.
+TICKET_MESSAGES,message,TEXT NOT NULL,Contenido del mensaje.
+TICKET_MESSAGES,is_staff,BOOLEAN NOT NULL,Indica si es respuesta interna.
+TICKET_MESSAGES,created_at,TIMESTAMP NOT NULL,Fecha del mensaje.
+FAQ_ENTRY,id,UUID PK NOT NULL,Identificador interno.
+FAQ_ENTRY,category,VARCHAR(100) NOT NULL,Categoría de la pregunta.
+FAQ_ENTRY,question,TEXT NOT NULL,Pregunta visible al usuario.
+FAQ_ENTRY,answer,TEXT NOT NULL,Respuesta detallada.
+FAQ_ENTRY,order,INT NOT NULL,Orden de visualización.
+FAQ_ENTRY,is_active,BOOLEAN NOT NULL,Indica si está publicada.
+FAQ_ENTRY,created_at,TIMESTAMP NOT NULL,Fecha de creación del registro.
+FAQ_ENTRY,updated_at,TIMESTAMP NOT NULL,Fecha de última actualización.
+FAQ_ENTRY,updated_by,UUID FK USERS(id) NULL,Auditoría de modificación administrativa.
+SUBSCRIPTIONS,id,UUID PK NOT NULL,Identificador interno único de la suscripción.
+SUBSCRIPTIONS,idPLANS,UUID FK PLANS(id) NOT NULL,Plan contratado por el usuario.
+SUBSCRIPTIONS,idUSERS,UUID FK USERS(id) NOT NULL,Usuario propietario de la suscripción.
+SUBSCRIPTIONS,external_subscription_id,VARCHAR(255) NOT NULL,ID de suscripción en Stripe.
+SUBSCRIPTIONS,external_customer_id,VARCHAR(255) NOT NULL,ID del cliente en Stripe.
+SUBSCRIPTIONS,status,"ENUM(activa,cancelada,past_due,incompleta) NOT NULL",Estado actual de la suscripción.
+SUBSCRIPTIONS,cancel_at_period_end,BOOLEAN NOT NULL DEFAULT false,Indica si se cancelará al finalizar el periodo.
+SUBSCRIPTIONS,period_started_at,TIMESTAMP NOT NULL,Fecha de inicio del ciclo vigente.
+SUBSCRIPTIONS,period_ends_at,TIMESTAMP NOT NULL,Fecha de término del ciclo vigente.
+SUBSCRIPTIONS,created_at,TIMESTAMP NOT NULL,Fecha de creación del registro.
+SUBSCRIPTIONS,updated_at,TIMESTAMP NOT NULL,Fecha de última actualización.
+SUBSCRIPTIONS,updated_by,UUID FK USERS(id) NULL,Auditoría de modificación administrativa.
+CREDIT_MOVEMENTS,id,UUID PK NOT NULL,Identificador único del movimiento.
+CREDIT_MOVEMENTS,idUSERS,UUID FK USERA(id) NOT NULL,Usuario afectado por el movimiento.
+CREDIT_MOVEMENTS,idAI_TASKS,UUID FK AI_TASKS(id) NULL,Trabajo asociado al consumo de crédito.
+CREDIT_MOVEMENTS,balance_change,INT NOT NULL,Cantidad positiva o negativa aplicada al balance.
+CREDIT_MOVEMENTS,change_type,"ENUM(uso_creditos,suscripcion,topup,ajuste_manual) NOT NULL",Clasificación del movimiento.
+CREDIT_MOVEMENTS,description,TEXT NULL,Detalle adicional del motivo del movimiento.
+CREDIT_MOVEMENTS,created_at,TIMESTAMP NOT NULL,Fecha en que se registró el movimiento.
+TRANSACTIONS,id,UUID PK NOT NULL,Identificador interno único de la transacción.
+TRANSACTIONS,idUSERS,UUID FK USERS(id) NOT NULL,Usuario que realizó el pago.
+TRANSACTIONS,amount,"DECIMAL(10,2) NOT NULL",Monto total de la transacción.
+TRANSACTIONS,currency,VARCHAR(10) NOT NULL,Código ISO de la moneda.
+TRANSACTIONS,idPAYMENT_METHODS,UUID FK PAYMENT_METHODS(id) NULL,Método de pago utilizado.
+TRANSACTIONS,status,"ENUM(pendiente,exitoso,fallido,reembolsado) NOT NULL",Estado actual del pago.
+TRANSACTIONS,transaction_type,"ENUM(suscripcion,topup,ajuste_manual) NOT NULL",Tipo de operación financiera.
+TRANSACTIONS,created_at,TIMESTAMP NOT NULL,Fecha del evento financiero.
+TRANSACTIONS,idSUBSCRIPTIONS,UUID FK SUBSCRIPTIONS(id) NULL,Relación con suscripción si aplica.
+TRANSACTIONS,external_reference,VARCHAR(255) NULL,ID de referencia en proveedor externo (Stripe).
+TRANSACTIONS,created_at,TIMESTAMP NOT NULL,Fecha de creación del registro.
+TRANSACTIONS,updated_at,TIMESTAMP NOT NULL,Fecha de última actualización.
+TRANSACTIONS,updated_by,UUID FK USERS(id) NULL,Auditoría administrativa.
