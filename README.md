@@ -70,7 +70,6 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 | System errors shall be presented in natural administrative language (e.g., "Instructor schedule conflict") rather than technical or numeric codes to facilitate self-correction. | **All CRUD Operations** | Error Recovery |
 | The system shall provide real-time visual feedback for data entry errors (e.g., incorrect date formats or duplicate vouchers) at the field level before form submission. | **CU-GE-003** (Modify Event), **CU-GE-010** (Validate Payments) | Error Prevention |
 | All administrative modules shall utilize a standardized UI library for CRUD operations, ensuring identical button placements, icon sets, and interaction patterns. | **CU-GE-012, 014, 015** (Category Management) | Consistency / Learnability |
-| Hoverable information icons shall be present for complex tasks (e.g., attendance file uploads) to explain specific data formats and process requirements. | **CU-GE-016** (Manage Attendance) | Learnability / Help |
 
 ## UX Testing and Validation Methodology
 
