@@ -4,8 +4,8 @@ from django.db import transaction
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Attendance, Category, Event, Enrollment, Payment, AttendanceDocument, Attendance
-from .serializers import AttendanceSerializer, CategorySerializer, EnrollmentSerializer, EventSerializer, PaymentSerializer, AttendanceDocumentSerializer, AttendanceSerializer
+from .models import Attendance, Category, Event, Enrollment, Payment, AttendanceDocument, Attendance, Professor, EventProfessor
+from .serializers import AttendanceSerializer, CategorySerializer, EnrollmentSerializer, EventSerializer, PaymentSerializer, AttendanceDocumentSerializer, AttendanceSerializer, ProfessorSerializer
 from django.utils import timezone
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -94,6 +94,24 @@ class EventViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
     
+    @action(detail=True, methods=['get'])
+    def clone(self, request, pk=None):
+        """
+        CU-GE-001: Returns event data ready for cloning (pre-filling a creation form).
+        Strips status, cancellation fields, and includes professors in writable format.
+        """
+        event = self.get_object()
+        serializer = self.get_serializer(event)
+        data = serializer.data.copy()
+        # Remove fields that shouldn't be cloned
+        for field in ['id', 'status', 'cancellation_reason', 'cancellation_date']:
+            data.pop(field, None)
+        # Add professors in writable format for the form
+        data['professors_data'] = list(
+            event.event_professors.values('professor_id', 'hours')
+        )
+        return Response(data)
+
     @action(detail=True, methods=['get'])
     def attendance_template(self, request, pk=None):
         """
@@ -512,3 +530,9 @@ class AttendanceViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AttendanceSerializer
     filterset_fields = ['event', 'attended']
     search_fields = ['participant_name']
+
+class ProfessorViewSet(viewsets.ModelViewSet):
+    queryset = Professor.objects.all().order_by('name')
+    serializer_class = ProfessorSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name']

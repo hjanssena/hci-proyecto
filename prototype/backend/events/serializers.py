@@ -1,12 +1,55 @@
 from rest_framework import serializers
-from .models import Attendance, AttendanceDocument, Category, Event, Enrollment, Payment
+from django.db import transaction
+from .models import Attendance, AttendanceDocument, Category, Event, Enrollment, Payment, Professor, EventProfessor
+
+class ProfessorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professor
+        fields = ['id', 'name', 'email']
+
+class EventProfessorSerializer(serializers.ModelSerializer):
+    professor = ProfessorSerializer(read_only=True)
+
+    class Meta:
+        model = EventProfessor
+        fields = ['id', 'professor', 'hours']
 
 class EventSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    event_professors = EventProfessorSerializer(many=True, read_only=True)
+    professors_data = serializers.ListField(
+        child=serializers.DictField(), write_only=True, required=False
+    )
+
     class Meta:
         model = Event
         fields = '__all__'
-        # We protect these fields from direct manual updates via PUT/PATCH
         read_only_fields = ('status', 'cancellation_reason', 'cancellation_date')
+
+    def _save_professors(self, event, professors_data):
+        event.event_professors.all().delete()
+        for prof_data in professors_data:
+            EventProfessor.objects.create(
+                event=event,
+                professor_id=prof_data['professor_id'],
+                hours=prof_data['hours']
+            )
+
+    def create(self, validated_data):
+        professors_data = validated_data.pop('professors_data', [])
+        with transaction.atomic():
+            event = super().create(validated_data)
+            if professors_data:
+                self._save_professors(event, professors_data)
+        return event
+
+    def update(self, instance, validated_data):
+        professors_data = validated_data.pop('professors_data', None)
+        with transaction.atomic():
+            event = super().update(instance, validated_data)
+            if professors_data is not None:
+                self._save_professors(event, professors_data)
+        return event
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,23 +57,23 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'is_active']
 
 class EnrollmentSerializer(serializers.ModelSerializer):
+    event_name = serializers.CharField(source='event.name', read_only=True)
+
     class Meta:
         model = Enrollment
         fields = '__all__'
         read_only_fields = ('status', 'rejection_reason')
 
 class PaymentSerializer(serializers.ModelSerializer):
-    # Pulling related data for convenience on the frontend
     applicant_name = serializers.CharField(source='enrollment.applicant_name', read_only=True)
     event_name = serializers.CharField(source='enrollment.event.name', read_only=True)
 
     class Meta:
         model = Payment
         fields = [
-            'id', 'enrollment', 'applicant_name', 'event_name', 
+            'id', 'enrollment', 'applicant_name', 'event_name',
             'amount', 'proof_of_payment', 'status', 'rejection_reason'
         ]
-        # Protect status and reason from generic updates
         read_only_fields = ('status', 'rejection_reason')
 
 class AttendanceDocumentSerializer(serializers.ModelSerializer):

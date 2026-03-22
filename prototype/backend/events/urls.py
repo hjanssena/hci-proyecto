@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AttendanceDocumentViewSet, AttendanceViewSet, EnrollmentViewSet, EventViewSet, CategoryViewSet, PaymentViewSet
+from .views import AttendanceDocumentViewSet, AttendanceViewSet, EnrollmentViewSet, EventViewSet, CategoryViewSet, PaymentViewSet, ProfessorViewSet
 
 # Initialize the router
 router = DefaultRouter()
@@ -12,6 +12,7 @@ router.register(r'enrollments', EnrollmentViewSet, basename='enrollment')
 router.register(r'payments', PaymentViewSet, basename='payment')
 router.register(r'attendance-documents', AttendanceDocumentViewSet, basename='attendance-document')
 router.register(r'attendance-records', AttendanceViewSet, basename='attendance-record')
+router.register(r'professors', ProfessorViewSet, basename='professor')
 
 urlpatterns = [
     # Include all auto-generated URLs from the router

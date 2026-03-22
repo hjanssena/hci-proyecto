@@ -3,6 +3,11 @@ import 'package:bebeia_front/viewmodels/dashboard_viewmodel.dart';
 import 'package:bebeia_front/viewmodels/users/login_viewmodel.dart';
 import 'package:bebeia_front/viewmodels/users/profile_viewmodel.dart';
 import 'package:bebeia_front/views/dashboard/profile/profile_screen.dart';
+import 'package:bebeia_front/views/dashboard/events/event_list_screen.dart';
+import 'package:bebeia_front/views/dashboard/categories/category_list_screen.dart';
+import 'package:bebeia_front/views/dashboard/enrollments/enrollment_list_screen.dart';
+import 'package:bebeia_front/views/dashboard/payments/payment_list_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +72,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Expanded(
             child: Row(
               children: [
-                // Web Sidebar
                 NavigationRail(
                   extended: true,
                   selectedIndex: _selectedIndex,
@@ -81,13 +85,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                   destinations: const [
                     NavigationRailDestination(
-                      icon: Icon(Icons.dashboard),
-                      label: Text('Dashboard'),
+                      icon: Icon(Icons.event),
+                      label: Text('Eventos'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.category),
+                      label: Text('Categorías'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.assignment),
+                      label: Text('Inscripciones'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.payment),
+                      label: Text('Pagos'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.person),
@@ -100,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
                         child: IconButton(
-                          icon: const Icon(Icons.logout, color: Colors.red),
+                          icon: const Icon(Icons.logout, color: Colors.white70),
                           onPressed: () => _handleLogout(context),
                           tooltip: 'Cerrar sesión',
                         ),
@@ -109,11 +126,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 const VerticalDivider(thickness: 1, width: 1),
-                // Main Content Area
                 Expanded(
-                  child: _selectedIndex == 0
-                      ? const Placeholder()
-                      : const ProfileScreen(),
+                  child: _buildContent(),
                 ),
               ],
             ),
@@ -123,8 +137,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Widget _buildContent() {
+    switch (_selectedIndex) {
+      case 0:
+        return const EventListScreen();
+      case 1:
+        return const CategoryListScreen();
+      case 2:
+        return const EnrollmentListScreen();
+      case 3:
+        return const PaymentListScreen();
+      case 4:
+        return const ProfileScreen();
+      default:
+        return const EventListScreen();
+    }
+  }
+
   void _handleLogout(BuildContext context) {
-    // Call the logout/blacklist logic here
     Navigator.of(context).pushReplacementNamed('/login');
   }
 }
