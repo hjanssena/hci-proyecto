@@ -98,23 +98,41 @@ class FCAContinua extends StatelessWidget {
           indicatorColor: const Color(0xFFC79316).withAlpha(51),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF002E5F),
-            foregroundColor: Colors.white,
-            minimumSize: const Size(120, 48),
-            shape: RoundedRectangleBorder(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return const Color(0xFF003D7A);
+              return const Color(0xFF002E5F);
+            }),
+            foregroundColor: WidgetStateProperty.all(Colors.white),
+            elevation: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return 6;
+              return 2;
+            }),
+            minimumSize: WidgetStateProperty.all(const Size(120, 48)),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-            ),
+            )),
+            animationDuration: const Duration(milliseconds: 200),
           ),
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: const Color(0xFFC79316),
-            side: const BorderSide(color: Color(0xFFC79316), width: 1.5),
-            minimumSize: const Size(120, 48),
-            shape: RoundedRectangleBorder(
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return Colors.white;
+              return const Color(0xFFC79316);
+            }),
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) return const Color(0xFFC79316);
+              return Colors.transparent;
+            }),
+            side: WidgetStateProperty.resolveWith((states) {
+              return const BorderSide(color: Color(0xFFC79316), width: 1.5);
+            }),
+            minimumSize: WidgetStateProperty.all(const Size(120, 48)),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-            ),
+            )),
+            animationDuration: const Duration(milliseconds: 200),
           ),
         ),
         appBarTheme: const AppBarTheme(

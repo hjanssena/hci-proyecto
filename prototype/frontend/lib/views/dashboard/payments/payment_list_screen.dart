@@ -100,7 +100,6 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                               DataColumn(label: Text('Evento', style: TextStyle(fontWeight: FontWeight.bold))),
                               DataColumn(label: Text('Monto', style: TextStyle(fontWeight: FontWeight.bold)), numeric: true),
                               DataColumn(label: Text('Estado', style: TextStyle(fontWeight: FontWeight.bold))),
-                              DataColumn(label: Text('Motivo', style: TextStyle(fontWeight: FontWeight.bold))),
                               DataColumn(label: Text('Comprobante', style: TextStyle(fontWeight: FontWeight.bold))),
                               DataColumn(label: Text('Acciones', style: TextStyle(fontWeight: FontWeight.bold))),
                             ],
@@ -110,15 +109,13 @@ class _PaymentListScreenState extends State<PaymentListScreen> {
                                 DataCell(Text(pay.applicantName)),
                                 DataCell(Text(pay.eventName, overflow: TextOverflow.ellipsis)),
                                 DataCell(Text('\$${pay.amount.toStringAsFixed(2)}')),
-                                DataCell(StatusBadge(label: pay.statusDisplay, color: pay.statusColor)),
-                                DataCell(
-                                  pay.rejectionReason != null && pay.rejectionReason!.isNotEmpty
-                                      ? ConstrainedBox(
-                                          constraints: const BoxConstraints(maxWidth: 200),
-                                          child: Text(pay.rejectionReason!, overflow: TextOverflow.ellipsis, maxLines: 2, style: TextStyle(color: Colors.red.shade700, fontSize: 13)),
-                                        )
-                                      : const Text('-', style: TextStyle(color: Colors.grey)),
-                                ),
+                                DataCell(StatusBadge(
+                                  label: pay.statusDisplay,
+                                  color: pay.statusColor,
+                                  tooltip: pay.rejectionReason != null && pay.rejectionReason!.isNotEmpty
+                                      ? 'Motivo: ${pay.rejectionReason}'
+                                      : null,
+                                )),
                                 DataCell(
                                   pay.proofOfPaymentUrl != null
                                       ? IconButton(

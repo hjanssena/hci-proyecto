@@ -21,6 +21,14 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
+  static const _navItems = [
+    _NavItem(icon: Icons.event, label: 'Eventos'),
+    _NavItem(icon: Icons.category, label: 'Categorías'),
+    _NavItem(icon: Icons.assignment, label: 'Inscripciones'),
+    _NavItem(icon: Icons.payment, label: 'Pagos'),
+    _NavItem(icon: Icons.person, label: 'Mi cuenta'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final user = context.select<LoginViewModel, User?>((vm) => vm.currentUser);
@@ -72,57 +80,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Expanded(
             child: Row(
               children: [
-                NavigationRail(
-                  extended: true,
-                  selectedIndex: _selectedIndex,
-                  onDestinationSelected: (int index) {
-                    setState(() => _selectedIndex = index);
-                  },
-                  leading: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      'Hola, ${user?.name ?? "Usuario"}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  destinations: const [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.event),
-                      label: Text('Eventos'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.category),
-                      label: Text('Categorías'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.assignment),
-                      label: Text('Inscripciones'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.payment),
-                      label: Text('Pagos'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.person),
-                      label: Text('Mi cuenta'),
-                    ),
-                  ],
-                  trailing: Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: IconButton(
-                          icon: const Icon(Icons.logout, color: Colors.white70),
-                          onPressed: () => _handleLogout(context),
-                          tooltip: 'Cerrar sesión',
+                Container(
+                  width: 220,
+                  color: const Color(0xFF002E5F),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'Hola, ${user?.name ?? "Usuario"}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
+                      const Divider(color: Colors.white24, height: 1),
+                      const SizedBox(height: 8),
+                      ...List.generate(_navItems.length, (i) {
+                        return _SidebarItem(
+                          icon: _navItems[i].icon,
+                          label: _navItems[i].label,
+                          selected: _selectedIndex == i,
+                          onTap: () => setState(() => _selectedIndex = i),
+                        );
+                      }),
+                      const Spacer(),
+                      _SidebarItem(
+                        icon: Icons.logout,
+                        label: 'Cerrar sesión',
+                        selected: false,
+                        onTap: () => _handleLogout(context),
+                        isLogout: true,
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                   ),
                 ),
                 const VerticalDivider(thickness: 1, width: 1),
@@ -156,5 +149,99 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _handleLogout(BuildContext context) {
     Navigator.of(context).pushReplacementNamed('/login');
+  }
+}
+
+class _NavItem {
+  final IconData icon;
+  final String label;
+  const _NavItem({required this.icon, required this.label});
+}
+
+class _SidebarItem extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final bool isLogout;
+
+  const _SidebarItem({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.isLogout = false,
+  });
+
+  @override
+  State<_SidebarItem> createState() => _SidebarItemState();
+}
+
+class _SidebarItemState extends State<_SidebarItem> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isHighlighted = widget.selected || _hovering;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            color: widget.selected
+                ? const Color(0xFFC79316).withAlpha(40)
+                : _hovering
+                    ? Colors.white.withAlpha(25)
+                    : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: widget.selected
+                ? Border.all(color: const Color(0xFFC79316).withAlpha(80))
+                : null,
+          ),
+          child: Row(
+            children: [
+              AnimatedScale(
+                scale: _hovering ? 1.15 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: Icon(
+                  widget.icon,
+                  size: 22,
+                  color: widget.isLogout
+                      ? (_hovering ? Colors.red.shade300 : Colors.white70)
+                      : widget.selected
+                          ? const Color(0xFFC79316)
+                          : isHighlighted
+                              ? Colors.white
+                              : Colors.white70,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: widget.selected ? FontWeight.bold : FontWeight.normal,
+                  color: widget.isLogout
+                      ? (_hovering ? Colors.red.shade300 : Colors.white70)
+                      : widget.selected
+                          ? const Color(0xFFC79316)
+                          : isHighlighted
+                              ? Colors.white
+                              : Colors.white70,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

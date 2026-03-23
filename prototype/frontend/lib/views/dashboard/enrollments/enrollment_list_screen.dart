@@ -113,7 +113,6 @@ class _EnrollmentListScreenState extends State<EnrollmentListScreen> {
                               DataColumn(label: Text('Solicitante', style: TextStyle(fontWeight: FontWeight.bold))),
                               DataColumn(label: Text('Evento', style: TextStyle(fontWeight: FontWeight.bold))),
                               DataColumn(label: Text('Estado', style: TextStyle(fontWeight: FontWeight.bold))),
-                              DataColumn(label: Text('Motivo', style: TextStyle(fontWeight: FontWeight.bold))),
                               DataColumn(label: Text('Documentos', style: TextStyle(fontWeight: FontWeight.bold))),
                               DataColumn(label: Text('Acciones', style: TextStyle(fontWeight: FontWeight.bold))),
                             ],
@@ -122,15 +121,13 @@ class _EnrollmentListScreenState extends State<EnrollmentListScreen> {
                               return DataRow(cells: [
                                 DataCell(Text(enr.applicantName)),
                                 DataCell(Text(enr.eventName ?? 'Evento #${enr.eventId}')),
-                                DataCell(StatusBadge(label: enr.statusDisplay, color: enr.statusColor)),
-                                DataCell(
-                                  enr.rejectionReason != null && enr.rejectionReason!.isNotEmpty
-                                      ? ConstrainedBox(
-                                          constraints: const BoxConstraints(maxWidth: 200),
-                                          child: Text(enr.rejectionReason!, overflow: TextOverflow.ellipsis, maxLines: 2, style: TextStyle(color: Colors.red.shade700, fontSize: 13)),
-                                        )
-                                      : const Text('-', style: TextStyle(color: Colors.grey)),
-                                ),
+                                DataCell(StatusBadge(
+                                  label: enr.statusDisplay,
+                                  color: enr.statusColor,
+                                  tooltip: enr.rejectionReason != null && enr.rejectionReason!.isNotEmpty
+                                      ? 'Motivo: ${enr.rejectionReason}'
+                                      : null,
+                                )),
                                 DataCell(
                                   enr.documentsUrl != null
                                       ? const Icon(Icons.description, color: Colors.blue, size: 20)
