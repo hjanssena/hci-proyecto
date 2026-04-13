@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/events/event.dart';
+import '../../../models/events/event_schedule.dart';
 import '../../../models/events/professor.dart';
 import '../../../viewmodels/events/event_form_viewmodel.dart';
 import '../../../views/widgets/info_tooltip.dart';
@@ -25,7 +26,6 @@ class _EventFormScreenState extends State<EventFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
-  final _scheduleCtrl = TextEditingController();
   final _durationCtrl = TextEditingController();
   final _locationCtrl = TextEditingController();
   final _maxCapCtrl = TextEditingController();
@@ -40,6 +40,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
   bool _byContract = false;
   DateTime? _startDate;
   DateTime? _endDate;
+  List<_ScheduleEntry> _schedules = [];
   List<_ProfessorEntry> _professors = [];
 
   bool _initialized = false;
@@ -66,7 +67,6 @@ class _EventFormScreenState extends State<EventFormScreen> {
   void dispose() {
     _nameCtrl.dispose();
     _descCtrl.dispose();
-    _scheduleCtrl.dispose();
     _durationCtrl.dispose();
     _locationCtrl.dispose();
     _maxCapCtrl.dispose();
@@ -99,7 +99,6 @@ class _EventFormScreenState extends State<EventFormScreen> {
     _initialized = true;
     _nameCtrl.text = event.name;
     _descCtrl.text = event.description;
-    _scheduleCtrl.text = event.schedule;
     _durationCtrl.text = event.durationHours.toString();
     _locationCtrl.text = event.locationOrLink;
     _maxCapCtrl.text = event.maxCapacity.toString();
@@ -113,6 +112,11 @@ class _EventFormScreenState extends State<EventFormScreen> {
     _byContract = event.byContract;
     _startDate = DateTime.tryParse(event.startDate);
     _endDate = DateTime.tryParse(event.endDate);
+    _schedules = event.schedules.map((s) => _ScheduleEntry(
+      day: s.day,
+      startTime: _parseTimeOfDay(s.startTime),
+      endTime: _parseTimeOfDay(s.endTime),
+    )).toList();
     _professors = event.professors
         .map((ep) => _ProfessorEntry(professor: ep.professor, hours: ep.hours))
         .toList();
@@ -245,7 +249,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Row 2: Dates
+                    // Row 2: Dates + Duration
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -275,20 +279,8 @@ class _EventFormScreenState extends State<EventFormScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildField(
-                            controller: _scheduleCtrl,
-                            label: 'Horario',
-                            hint: 'Ej: Lunes a Viernes 18:00 - 20:00',
-                            highlight: isClone,
-                            validator: (v) => v == null || v.trim().isEmpty
-                                ? 'El horario es obligatorio'
-                                : null,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
                         SizedBox(
-                          width: 120,
+                          width: 150,
                           child: _buildField(
                             controller: _durationCtrl,
                             label: 'Duración (hrs)',
@@ -305,6 +297,87 @@ class _EventFormScreenState extends State<EventFormScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+
+                    // Schedules section
+                    Row(
+                      children: [
+                        const Text('Horario semanal', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        const SizedBox(width: 8),
+                        const InfoTooltip(message: 'Defina los días y horas en que se impartirá el evento.'),
+                        const Spacer(),
+                        TextButton.icon(
+                          onPressed: () {
+                            setState(() => _schedules.add(_ScheduleEntry()));
+                          },
+                          icon: const Icon(Icons.add),
+                          label: const Text('Agregar horario'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    if (_submitted && _schedules.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text('Debe agregar al menos un horario', style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12)),
+                      ),
+                    ..._schedules.asMap().entries.map((entry) {
+                      final idx = entry.key;
+                      final sch = entry.value;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 180,
+                              child: DropdownButtonFormField<int>(
+                                value: sch.day,
+                                decoration: InputDecoration(
+                                  labelText: 'Día ${idx + 1}',
+                                  border: const OutlineInputBorder(),
+                                  filled: isClone,
+                                  fillColor: isClone ? Colors.yellow.shade50 : null,
+                                ),
+                                items: EventSchedule.dayLabels.entries.map((e) =>
+                                  DropdownMenuItem(value: e.key, child: Text(e.value)),
+                                ).toList(),
+                                onChanged: (v) => setState(() => sch.day = v),
+                                validator: (v) => v == null ? 'Seleccione un día' : null,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            _buildTimePicker(
+                              label: 'Hora inicio',
+                              value: sch.startTime,
+                              highlight: isClone,
+                              onChanged: (t) => setState(() => sch.startTime = t),
+                              validator: () => _submitted && sch.startTime == null ? 'Obligatorio' : null,
+                            ),
+                            const SizedBox(width: 12),
+                            _buildTimePicker(
+                              label: 'Hora fin',
+                              value: sch.endTime,
+                              highlight: isClone,
+                              onChanged: (t) => setState(() => sch.endTime = t),
+                              validator: () {
+                                if (_submitted && sch.endTime == null) return 'Obligatorio';
+                                if (sch.startTime != null && sch.endTime != null) {
+                                  final start = sch.startTime!.hour * 60 + sch.startTime!.minute;
+                                  final end = sch.endTime!.hour * 60 + sch.endTime!.minute;
+                                  if (end <= start) return 'Debe ser posterior';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle, color: Colors.red),
+                              onPressed: () => setState(() => _schedules.removeAt(idx)),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
                     const SizedBox(height: 16),
 
                     // Row 3: Modality + Location
@@ -703,6 +776,65 @@ class _EventFormScreenState extends State<EventFormScreen> {
     );
   }
 
+  Widget _buildTimePicker({
+    required String label,
+    required TimeOfDay? value,
+    required ValueChanged<TimeOfDay> onChanged,
+    required String? Function() validator,
+    bool highlight = false,
+  }) {
+    final error = validator();
+    return SizedBox(
+      width: 150,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: () async {
+              final time = await showTimePicker(
+                context: context,
+                initialTime: value ?? const TimeOfDay(hour: 9, minute: 0),
+              );
+              if (time != null) onChanged(time);
+            },
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: label,
+                border: const OutlineInputBorder(),
+                enabledBorder: error != null
+                    ? OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.error))
+                    : null,
+                filled: highlight,
+                fillColor: highlight ? Colors.yellow.shade50 : null,
+                suffixIcon: const Icon(Icons.access_time, size: 20),
+              ),
+              child: Text(
+                value != null ? value.format(context) : 'Seleccionar',
+                style: TextStyle(color: value != null ? Colors.black : Colors.grey),
+              ),
+            ),
+          ),
+          if (error != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 12, top: 4),
+              child: Text(error, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12)),
+            ),
+        ],
+      ),
+    );
+  }
+
+  TimeOfDay? _parseTimeOfDay(String time) {
+    final parts = time.split(':');
+    if (parts.length >= 2) {
+      final h = int.tryParse(parts[0]);
+      final m = int.tryParse(parts[1]);
+      if (h != null && m != null) return TimeOfDay(hour: h, minute: m);
+    }
+    return null;
+  }
+
   void _saveEvent() {
     setState(() => _submitted = true);
     _validateDates();
@@ -713,8 +845,10 @@ class _EventFormScreenState extends State<EventFormScreen> {
         _endDateError == null &&
         _startDate != null &&
         _endDate != null;
+    final schedulesValid = _schedules.isNotEmpty &&
+        _schedules.every((s) => s.day != null && s.startTime != null && s.endTime != null);
 
-    if (!formValid || !datesValid) return;
+    if (!formValid || !datesValid || !schedulesValid) return;
 
     final data = {
       'name': _nameCtrl.text.trim(),
@@ -724,7 +858,14 @@ class _EventFormScreenState extends State<EventFormScreen> {
           '${_startDate!.year}-${_startDate!.month.toString().padLeft(2, '0')}-${_startDate!.day.toString().padLeft(2, '0')}',
       'end_date':
           '${_endDate!.year}-${_endDate!.month.toString().padLeft(2, '0')}-${_endDate!.day.toString().padLeft(2, '0')}',
-      'schedule': _scheduleCtrl.text.trim(),
+      'schedules_data': _schedules
+          .where((s) => s.day != null && s.startTime != null && s.endTime != null)
+          .map((s) => {
+            'day': s.day,
+            'start_time': '${s.startTime!.hour.toString().padLeft(2, '0')}:${s.startTime!.minute.toString().padLeft(2, '0')}',
+            'end_time': '${s.endTime!.hour.toString().padLeft(2, '0')}:${s.endTime!.minute.toString().padLeft(2, '0')}',
+          })
+          .toList(),
       'duration_hours': int.tryParse(_durationCtrl.text) ?? 0,
       'modality': _modality,
       'location_or_link': _locationCtrl.text.trim(),
@@ -759,6 +900,13 @@ class _EventFormScreenState extends State<EventFormScreen> {
       }
     });
   }
+}
+
+class _ScheduleEntry {
+  int? day;
+  TimeOfDay? startTime;
+  TimeOfDay? endTime;
+  _ScheduleEntry({this.day, this.startTime, this.endTime});
 }
 
 class _ProfessorEntry {

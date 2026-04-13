@@ -106,9 +106,12 @@ class EventViewSet(viewsets.ModelViewSet):
         # Remove fields that shouldn't be cloned
         for field in ['id', 'status', 'cancellation_reason', 'cancellation_date']:
             data.pop(field, None)
-        # Add professors in writable format for the form
+        # Add professors and schedules in writable format for the form
         data['professors_data'] = list(
             event.event_professors.values('professor_id', 'hours')
+        )
+        data['schedules_data'] = list(
+            event.schedules.values('day', 'start_time', 'end_time')
         )
         return Response(data)
 

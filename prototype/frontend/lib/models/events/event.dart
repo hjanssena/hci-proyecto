@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'event_professor.dart';
+import 'event_schedule.dart';
 
 class Event {
   final int? id;
@@ -10,7 +11,7 @@ class Event {
   final String status;
   final String startDate;
   final String endDate;
-  final String schedule;
+  final List<EventSchedule> schedules;
   final int durationHours;
   final String modality;
   final String locationOrLink;
@@ -34,7 +35,7 @@ class Event {
     this.status = 'IN',
     required this.startDate,
     required this.endDate,
-    required this.schedule,
+    this.schedules = const [],
     required this.durationHours,
     required this.modality,
     required this.locationOrLink,
@@ -60,7 +61,10 @@ class Event {
       status: json['status'] ?? 'IN',
       startDate: json['start_date'] ?? '',
       endDate: json['end_date'] ?? '',
-      schedule: json['schedule'] ?? '',
+      schedules: (json['schedules'] as List?)
+              ?.map((s) => EventSchedule.fromJson(s))
+              .toList() ??
+          [],
       durationHours: json['duration_hours'] ?? 0,
       modality: json['modality'] ?? 'PR',
       locationOrLink: json['location_or_link'] ?? '',
@@ -86,7 +90,7 @@ class Event {
     'description': description,
     'start_date': startDate,
     'end_date': endDate,
-    'schedule': schedule,
+    'schedules_data': schedules.map((s) => s.toWritableJson()).toList(),
     'duration_hours': durationHours,
     'modality': modality,
     'location_or_link': locationOrLink,
@@ -103,6 +107,11 @@ class Event {
   String get statusDisplay => statusLabels[status] ?? status;
   String get modalityDisplay => modalityLabels[modality] ?? modality;
   Color get statusColor => statusColors[status] ?? Colors.grey;
+
+  String get scheduleSummary {
+    if (schedules.isEmpty) return 'Sin horario definido';
+    return schedules.map((s) => '${s.dayLabel}: ${s.startTime} - ${s.endTime}').join('\n');
+  }
 
   static const Map<String, String> statusLabels = {
     'IN': 'En fase de inscripciones',

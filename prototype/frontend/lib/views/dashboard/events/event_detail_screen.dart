@@ -76,6 +76,24 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   _buildInfoGrid(e),
                   const SizedBox(height: 24),
 
+                  // Schedules
+                  if (e.schedules.isNotEmpty) ...[
+                    const Text('Horario semanal', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    ...e.schedules.map((s) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.schedule, size: 18, color: Colors.blueGrey),
+                          const SizedBox(width: 8),
+                          SizedBox(width: 100, child: Text(s.dayLabel, style: const TextStyle(fontWeight: FontWeight.w600))),
+                          Text('${s.startTime} - ${s.endTime}'),
+                        ],
+                      ),
+                    )),
+                    const SizedBox(height: 24),
+                  ],
+
                   // Professors
                   if (e.professors.isNotEmpty) ...[
                     const Text('Profesores', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -177,7 +195,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         _infoItem('Modalidad', e.modalityDisplay),
         _infoItem('Fecha de inicio', e.startDate),
         _infoItem('Fecha de fin', e.endDate),
-        _infoItem('Horario', e.schedule),
         _infoItem('Duración', '${e.durationHours} horas'),
         _infoItem('Ubicación/Enlace', e.locationOrLink),
         _infoItem('Capacidad máxima', e.maxCapacity.toString()),

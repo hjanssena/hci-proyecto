@@ -15,10 +15,10 @@ Retrieves a paginated list of all events, ordered by `start_date` descending.
   * `search`: Performs a "search-as-you-type" query against the event `name`.
   * `status`: Filters by exact status (e.g., `?status=IN` for "En fase de inscripciones").
   * `modality`: Filters by modality (e.g., `?modality=PR` for "Presencial").
-* **Response:** `200 OK` with an array of event objects.
+* **Response:** `200 OK` with an array of event objects. Each event includes a `schedules` array with the structured schedule per day (fields: `id`, `day`, `day_display`, `start_time`, `end_time`).
 
 ### 2. Retrieve a Single Event
-Fetches the full details of a specific event. This endpoint is also used by the frontend to fetch data for "cloning" an event.
+Fetches the full details of a specific event. This endpoint is also used by the frontend to fetch data for "cloning" an event. The response includes a `schedules` array and, when using the clone endpoint, a `schedules_data` array in writable format.
 
 * **Endpoint:** `GET /api/v1/events/{id}/`
 * **Response:** `200 OK` with the event object.
@@ -33,7 +33,11 @@ Creates a new event. The system forces the initial status to "En fase de inscrip
   * `description` *(string, required)*: Descripción general.
   * `start_date` *(string YYYY-MM-DD, required)*: Fecha de inicio.
   * `end_date` *(string YYYY-MM-DD, required)*: Fecha de fin.
-  * `schedule` *(string, required)*: Horario del evento.
+  * `schedules_data` *(array of objects, optional)*: Horario del evento por día de la semana. Each object contains:
+    * `day` *(integer, required)*: Día de la semana (`0`=Lunes, `1`=Martes, `2`=Miércoles, `3`=Jueves, `4`=Viernes, `5`=Sábado, `6`=Domingo).
+    * `start_time` *(string HH:MM, required)*: Hora de inicio.
+    * `end_time` *(string HH:MM, required)*: Hora de fin.
+    * Example: `[{"day": 0, "start_time": "09:00", "end_time": "11:00"}, {"day": 2, "start_time": "14:00", "end_time": "16:00"}]`
   * `duration_hours` *(integer, required)*: Duración en horas.
   * `modality` *(string, required)*: `PR` (Presencial), `VI` (Virtual), or `HY` (Híbrida).
   * `location_or_link` *(string, required)*: Aula o enlace de acceso.

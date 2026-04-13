@@ -123,9 +123,11 @@ class EventFormViewModel extends ChangeNotifier {
       'category': 'Categoría',
       'start_date': 'Fecha de inicio',
       'end_date': 'Fecha de fin',
+      'schedules_data': 'Horarios',
       'price': 'Precio',
       'max_capacity': 'Capacidad máxima',
       'min_inscriptions': 'Mínimo de inscripciones',
+      'duration_hours': 'Duración',
     };
     return labels[key] ?? key;
   }

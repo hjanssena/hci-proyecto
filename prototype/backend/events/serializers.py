@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db import transaction
-from .models import Attendance, AttendanceDocument, Category, Event, Enrollment, Payment, Professor, EventProfessor
+from .models import Attendance, AttendanceDocument, Category, Event, EventSchedule, Enrollment, Payment, Professor, EventProfessor
 
 class ProfessorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,10 +14,21 @@ class EventProfessorSerializer(serializers.ModelSerializer):
         model = EventProfessor
         fields = ['id', 'professor', 'hours']
 
+class EventScheduleSerializer(serializers.ModelSerializer):
+    day_display = serializers.CharField(source='get_day_display', read_only=True)
+
+    class Meta:
+        model = EventSchedule
+        fields = ['id', 'day', 'day_display', 'start_time', 'end_time']
+
 class EventSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
     event_professors = EventProfessorSerializer(many=True, read_only=True)
+    schedules = EventScheduleSerializer(many=True, read_only=True)
     professors_data = serializers.ListField(
+        child=serializers.DictField(), write_only=True, required=False
+    )
+    schedules_data = serializers.ListField(
         child=serializers.DictField(), write_only=True, required=False
     )
 
@@ -35,20 +46,36 @@ class EventSerializer(serializers.ModelSerializer):
                 hours=prof_data['hours']
             )
 
+    def _save_schedules(self, event, schedules_data):
+        event.schedules.all().delete()
+        for sched in schedules_data:
+            EventSchedule.objects.create(
+                event=event,
+                day=sched['day'],
+                start_time=sched['start_time'],
+                end_time=sched['end_time']
+            )
+
     def create(self, validated_data):
         professors_data = validated_data.pop('professors_data', [])
+        schedules_data = validated_data.pop('schedules_data', [])
         with transaction.atomic():
             event = super().create(validated_data)
             if professors_data:
                 self._save_professors(event, professors_data)
+            if schedules_data:
+                self._save_schedules(event, schedules_data)
         return event
 
     def update(self, instance, validated_data):
         professors_data = validated_data.pop('professors_data', None)
+        schedules_data = validated_data.pop('schedules_data', None)
         with transaction.atomic():
             event = super().update(instance, validated_data)
             if professors_data is not None:
                 self._save_professors(event, professors_data)
+            if schedules_data is not None:
+                self._save_schedules(event, schedules_data)
         return event
 
 class CategorySerializer(serializers.ModelSerializer):

@@ -26,7 +26,6 @@ class Event(models.Model):
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.INSCRIPTIONS)
     start_date = models.DateField()
     end_date = models.DateField()
-    schedule = models.CharField(max_length=255)
     duration_hours = models.PositiveIntegerField()
     modality = models.CharField(max_length=2, choices=Modality.choices)
     location_or_link = models.CharField(max_length=255)
@@ -44,6 +43,28 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+class EventSchedule(models.Model):
+    class DayOfWeek(models.IntegerChoices):
+        MONDAY = 0, 'Lunes'
+        TUESDAY = 1, 'Martes'
+        WEDNESDAY = 2, 'Miércoles'
+        THURSDAY = 3, 'Jueves'
+        FRIDAY = 4, 'Viernes'
+        SATURDAY = 5, 'Sábado'
+        SUNDAY = 6, 'Domingo'
+
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='schedules')
+    day = models.IntegerField(choices=DayOfWeek.choices)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    class Meta:
+        unique_together = ('event', 'day')
+        ordering = ['day', 'start_time']
+
+    def __str__(self):
+        return f"{self.get_day_display()} {self.start_time:%H:%M} - {self.end_time:%H:%M}"
 
 class Professor(models.Model):
     name = models.CharField(max_length=255)
