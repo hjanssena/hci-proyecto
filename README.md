@@ -8,14 +8,14 @@
 * Jose Elias Novelo Collí
 
 ##  Project Overview
-This system is an internal administrative platform designed for the **Staff of the FCA Continuous Education Department**. It streamlines the lifecycle of educational events, from initial creation and categorization to the management of participant applications, attendance, and financial resolutions.
+This system is an internal administrative platform designed for the **Staff of the FCA Continuous Education Department**. It focuses on streamlining the complete lifecycle of educational events, from initial creation and scheduling to formal conclusion or cancellation.
 
 The platform centralizes administrative tasks, replacing manual tracking with a digital workflow to manage courses, workshops and diplomas.
 
 [Click here for more information about the project](https://github.com/Proyectos-Vinculacion-FMAT/ECFCA)
 
 ##  Target User
-* **FCA Continuous Education Staff (Coordinators):** Users responsible for setting up the educational offer, reviewing applicant documentation, confirming registrations, and managing post-event data.
+* **FCA Continuous Education Staff (Coordinators):** Users responsible for setting up the educational offer and managing post-event data.
 
 [Click here to see our Persona specification](https://github.com/hjanssena/hci-proyecto/blob/97920b055d7ff2ed91a164167daa1bf3a51b1894/UserPersona.pdf)
 
@@ -27,20 +27,15 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
     * Modification of event details like teachers, dates, and modalities.
     * Archiving events for historical reporting.
     * Formal cancellation with automated voucher/refund workflows.
-* **Category Management:**
-    * Standardization of event types (e.g., "Diplomado", "Taller").
-    * Full management (CRUD) and archiving of categories.
-* **Enrollment & Payment Operations:**
-    * Reviewing and approving/rejecting enrollment requests.
-    * Manual validation of bank transfers and cash deposits.
-* **Post-Event Administration:**
-    * Loading and managing attendance records for concluded events.
 
 ### **Out of Scope**
 * **Public Portal:** No external interface for student self-registration or automated payment gateways.
 * **Instructor Tools:** No dedicated views for instructors to check payment details or assigned courses.
 * **Certification:** Automated generation of participant or instructor certificates is not supported.
 * **Discount Management:** No tools for managing discounts for each course.
+* **Category Management:** Managing event categories is no longer a core function of this project.
+* **Enrollment & Payment Processing:** Reviewing applications or validating manual payments.
+* **Post-Event Attendance:** Loading and managing attendance records.
 
 
 ##  Implemented Use Cases
@@ -74,7 +69,7 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 ## UX Testing and Validation Methodology
 
 #### Objective
-The goal is to validate that the system enables staff to manage 15-20 simultaneous programs with high speed and zero data loss. Testing will ensure the digital workflow matches or exceeds the efficiency of the current administrative methods.
+The goal is to validate that the system enables staff to manage the lifecycle of 15-20 simultaneous programs (events) with high speed and zero data loss. Testing will ensure the digital workflow matches or exceeds the efficiency of the current administrative methods.
 
 #### Iterative Cycle
 We follow a lean UX process to refine the user experience:
