@@ -64,7 +64,7 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 | The system shall provide "search-as-you-type" functionality across event and category lists to facilitate rapid retrieval of historical and active data. | **CU-GE-002** (Consult Events), **CU-GE-013** (Consult Categories) | **Operability** | Functional test: results appear within 300 ms of each keystroke across a dataset of ≥ 500 records; user locates a target record in ≤ 30 seconds in usability test. |
 | System errors shall be presented in natural administrative language (e.g., "Instructor schedule conflict") rather than technical or numeric codes to facilitate self-correction. | **All CRUD Operations** | **User Error Protection** | Expert review: 100% of error messages reviewed against plain-language checklist; user test: ≥ 80% of participants self-correct after reading an error message without external help. |
 | The system shall provide real-time visual feedback for data entry errors (e.g., incorrect date formats or duplicate vouchers) at the field level before form submission. | **CU-GE-003** (Modify Event), **CU-GE-010** (Validate Payments) | **User Error Protection** | Automated test: inline validation triggers within 500 ms of focus-out on invalid fields; 0% of invalid forms successfully submitted in regression tests. |
-| All administrative modules shall utilize a standardized UI library for CRUD operations, ensuring identical button placements, icon sets, and interaction patterns. | **CU-GE-012, 014, 015** (Category Management) | **Learnability** | UI audit: 100% of CRUD screens share identical primary-action button position and icon set; first-time task success rate ≥ 85% without training in usability test with new users. |
+| All administrative modules shall utilize a standardized UI library for CRUD operations, ensuring identical button placements, icon sets, and interaction patterns. | **CU-GE-012, 014, 015** (Category Management) | **Operability** | UI audit: 100% of CRUD screens share identical primary-action button position and icon set; first-time task success rate ≥ 85% without training in usability test with new users. |
 
 ### ISO 25010 Usability Attribute Definitions
 
@@ -74,7 +74,6 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 | **Accessibility** | Degree to which a product or system can be used by people with the widest range of characteristics and capabilities to achieve a specified goal in a specified context of use. |
 | **Appropriateness Recognizability** | Degree to which users can recognize whether a product or system is appropriate for their needs. |
 | **User Error Protection** | Degree to which a system protects users against making errors. |
-| **Learnability** | Degree to which a product or system can be used by specified users to achieve specified goals of learning to use the product or system with effectiveness, efficiency, freedom from risk, and satisfaction in a specified context of use. |
 
 ## UX Testing and Validation Methodology
 
