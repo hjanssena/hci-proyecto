@@ -46,20 +46,25 @@ The platform centralizes administrative tasks, replacing manual tracking with a 
 | **CU-GE-002** | **Consult Events** | Search and filter the list of registered events. |
 | **CU-GE-003** | **Modify Event** | Update information for existing events (dates, modality, etc.). |
 | **CU-GE-004** | **Archive Event** | Move events to a historical state; triggers cancellation if active. |
-| **CU-GE-025** | **Cancel Event** | Formally cancel events.|
+| **CU-GE-009** | **Manage Enrollment** | Review applicant documents and approve/reject participants. |
+| **CU-GE-010** | **Validate Manual Payments** | Verify external transfers/deposits to confirm inscriptions. |
+| **CU-GE-012** | **Create Category** | Define new classifications like "Diplomado" or "Curso". |
+| **CU-GE-013** | **Consult Categories** | View all active and archived event categories. |
+| **CU-GE-014** | **Modify Category** | Edit category names or change their status. |
+| **CU-GE-015** | **Archive Category** | Disable categories from future use while maintaining history. |
+| **CU-GE-025** | **Cancel Event** | Formally cancel events and process vouchers or refunds. |
 
 ## Non-Functional Requirements
 
-|     Requirement                                                                              |     Usability Attribute            |     Metric                                                             |
-|----------------------------------------------------------------------------------------------|------------------------------------|------------------------------------------------------------------------|
-| System pre-fills ~90% of fields when cloning an event, highlighting only variable fields.    |     Efficiency                     | Pre-fill rate ≥90%. Time to complete clone < 2 minutes.                |
-| Primary event list displays ≥10 records on a 1080p screen without vertical scrolling.        |     Efficiency                     | Visible rows ≥10%.                                                     |
-| Event statuses use high-contrast color codes for instant recognition.                        |     Visibility of System Status    | Identification accuracy ≥90%. Avg response time < 2 seconds.           |
-| Typing filters the event list in real time.                                                  |     Efficiency / Findability       | Response time < 300 ms for   1,000 events. User satisfaction (1–5).    |
-| Error messages use plain administrative language.                                            |     Error Recovery                 | Correct understanding ≥80%. Support requests near zero.                |
-| Invalid inputs flagged before submission.                                                    |     Error Prevention               | Error prevention rate ≥95%.                                            |
-| All screens share identical layout, icons, and button placement.                             |     Consistency / Learnability     | Visual consistency score (yes/no). Task time ±10%.                     |
-| Hoverable info icons explain ambiguous fields.                                               |     Learnability                   | Help usage rate (%). Task confidence (1–5) before/after.               |
+| Requirement | Related Functional Requirements | Usability Attribute |
+| :--- | :--- | :--- |
+| The system shall pre-fill approximately 90% of fields when cloning an event, visually highlighting only the mandatory variable fields (e.g., dates, instructors) to minimize data entry effort. | **CU-GE-001** (Create Event) | Efficiency / Cognitive Load |
+| The primary administrative interface shall utilize a compact, tabular design capable of displaying at least 10 simultaneous records on a 1080p resolution without requiring vertical scrolling. | **CU-GE-002** (Consult Events) | Visibility / Accessibility |
+| All event and enrollment records shall feature high-contrast, color-coded visual indicators (e.g., "Pending," "Confirmed," "Archived") to allow for immediate identification of record status. | **CU-GE-009** (Manage Enrollment), **CU-GE-010** (Validate Payments) | Memorability / Perception |
+| The system shall provide "search-as-you-type" functionality across event and category lists to facilitate rapid retrieval of historical and active data. | **CU-GE-002** (Consult Events), **CU-GE-013** (Consult Categories) | Efficiency / Findability |
+| System errors shall be presented in natural administrative language (e.g., "Instructor schedule conflict") rather than technical or numeric codes to facilitate self-correction. | **All CRUD Operations** | Error Recovery |
+| The system shall provide real-time visual feedback for data entry errors (e.g., incorrect date formats or duplicate vouchers) at the field level before form submission. | **CU-GE-003** (Modify Event), **CU-GE-010** (Validate Payments) | Error Prevention |
+| All administrative modules shall utilize a standardized UI library for CRUD operations, ensuring identical button placements, icon sets, and interaction patterns. | **CU-GE-012, 014, 015** (Category Management) | Consistency / Learnability |
 
 ## UX Testing and Validation Methodology
 
