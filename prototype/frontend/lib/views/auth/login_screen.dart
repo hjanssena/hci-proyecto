@@ -145,17 +145,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
 
                   // Navigation Links
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ForgotPasswordScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text('Forgot Password?'),
-                  ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => const ForgotPasswordScreen(),
+                  //       ),
+                  //     );
+                  //   },
+                  //   child: const Text('Forgot Password?'),
+                  // ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
